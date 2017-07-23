@@ -26,4 +26,12 @@ public class OrdersStorage {
 		return ordersToBuy.size() + ordersToSell.size();
 	}
 
+	public boolean remove(Order order) {
+		if (order.isSale)
+			return ordersToSell.remove(order);
+		else
+			return ordersToBuy.remove(order);
+
+	}
+
 }

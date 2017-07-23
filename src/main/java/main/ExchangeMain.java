@@ -1,7 +1,6 @@
 package main;
 
 import java.io.File;
-import java.util.Iterator;
 import java.util.List;
 
 import data.Client;
@@ -36,41 +35,47 @@ public class ExchangeMain {
 			System.exit(1);
 		}
 
-		List<Client> clients = IOUtils.readClientsData(clientsFile);
-		List<Order> orders = IOUtils.readOrders(clients, ordersFile);
-		OrdersStorage storage = new OrdersStorage();
-		for (Order order : orders) {
-			processOrder(clients, order, storage);
-		}
+		try {
+			List<Client> clients = IOUtils.readClients(clientsFile);
+			List<Order> orders = IOUtils.readOrders(ordersFile);
+			OrdersStorage storage = new OrdersStorage();
+			for (Order order : orders) {
+				processOrder(clients, order, storage);
+			}
 
-		IOUtils.end(clients, orders, storage);
+			IOUtils.end(clients, orders, storage);
+		} catch (IllegalStateException e) {
+			System.exit(1);
+		}
 	}
 
-	private static void processOrder(List<Client> clients, Order order, OrdersStorage storage) {
-		boolean isDone = false;
-		Order match = null;
-		Iterator<Order> iter = storage.getOppositeOrders(order).iterator();
-		while (iter.hasNext()) {
-			Order current = iter.next();
-			if (isOrdersMatch(order, current)) {
-				if (isDone) {
-					IOUtils.debug("choice", "Order: " + order + " old choice: " + match + " alternative: " + current);
-					continue;
-				}
-				isDone = true;
-				match = current;
-				iter.remove();
-			}
-		}
+	public static void processOrder(List<Client> clients, Order order, OrdersStorage storage) {
+		Order match = getOppositeOrder(order, storage);
 
-		if (isDone) {
+		if (match != null) {
+			boolean remove = storage.remove(match);
+			assert remove;
 			calculateClients(clients, match, order);
 		} else {
 			storage.addOrder(order);
 		}
 	}
 
-	private static void calculateClients(List<Client> clients, Order match, Order order) {
+	public static Order getOppositeOrder(Order order, OrdersStorage storage) {
+		Order match = null;
+		for (Order current : storage.getOppositeOrders(order)) {
+			if (isOrdersMatch(order, current)) {
+				if (match != null) {
+					IOUtils.debug("choice", "Order: " + order + " old choice: " + match + " alternative: " + current);
+					continue;
+				}
+				match = current;
+			}
+		}
+		return match;
+	}
+
+	public static void calculateClients(List<Client> clients, Order match, Order order) {
 		Client buyer = null;
 		Client seller = null;
 		for (Client client : clients) {
@@ -101,7 +106,8 @@ public class ExchangeMain {
 		IOUtils.debug("full", "buyer: " + buyer);
 
 		int amount = order.getAmount();
-		int sum = amount * order.getPrice();
+		int price = order.getPrice();
+		int sum = amount * price;
 		seller.addToCash(sum);
 		buyer.addToCash(-sum);
 		switch (order.getLot()) {
@@ -125,9 +131,8 @@ public class ExchangeMain {
 			break;
 
 		default:
-			System.err.println("Error: unknown lot: " + order);
-			System.exit(1);
-			break;
+			IOUtils.printErr("Error: unknown lot: " + order);
+			throw new IllegalStateException();
 		}
 		IOUtils.debug("full", "seller after: " + seller);
 		IOUtils.debug("full", "buyer after: " + buyer);
@@ -135,10 +140,13 @@ public class ExchangeMain {
 
 	}
 
-	private static boolean isOrdersMatch(Order order, Order current) {
-		return current.isSale() ^ order.isSale() && current.getLot().equals(order.getLot())
-				&& current.getAmount() == order.getAmount() && current.getPrice() == order.getPrice()
-				&& !current.getName().equals(order.getName());
+	public static boolean isOrdersMatch(Order order, Order current) {
+		boolean sale = current.isSale() ^ order.isSale();
+		boolean lot = current.getLot().equals(order.getLot());
+		boolean amount = current.getAmount() == order.getAmount();
+		boolean price = current.getPrice() == order.getPrice();
+		boolean name = !current.getName().equals(order.getName());
+		return sale && lot && amount && price && name;
 	}
 
 }

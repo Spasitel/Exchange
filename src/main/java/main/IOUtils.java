@@ -25,10 +25,17 @@ public class IOUtils {
 
 	private static Map<String, PrintWriter> debugLogs = new LinkedHashMap<>();
 	private static boolean debug = false;
+	public static boolean consoleEnable = false;
 
 	public static void init() {
 		if (System.getProperty("debug").equalsIgnoreCase("true"))
 			debug = true;
+		consoleEnable = true;
+	}
+
+	public static void printErr(String message) {
+		if (consoleEnable)
+			System.err.println(message);
 	}
 
 	public static void debug(String logName, String message) {
@@ -40,9 +47,10 @@ public class IOUtils {
 					outputStream = new PrintWriter(fileName);
 					debugLogs.put(logName, outputStream);
 				} catch (FileNotFoundException e) {
-					System.err.println("Error: could not open debug file: " + fileName);
+
+					printErr("Error: could not open debug file: " + fileName);
 					e.printStackTrace();
-					System.exit(1);
+					throw new IllegalStateException();
 				}
 			}
 
@@ -51,7 +59,7 @@ public class IOUtils {
 
 	}
 
-	public static List<Client> readClientsData(File clientsFile) {
+	public static List<Client> readClients(File clientsFile) {
 		List<Client> clients = new LinkedList<Client>();
 		try {
 			Scanner sc = new Scanner(clientsFile);
@@ -70,17 +78,17 @@ public class IOUtils {
 			IOUtils.fileNotFound(clientsFile);
 			e.printStackTrace();
 			assert false : "checkFiles failed";
-			System.exit(1);
+			throw new IllegalStateException();
 		} catch (InputMismatchException e) {
 			IOUtils.wrongFileFormat(clientsFile);
 			e.printStackTrace();
-			System.exit(1);
+			throw new IllegalStateException();
 		}
 		return clients;
 	}
 
 	private static void wrongFileFormat(File clientsFile) {
-		System.err.println("Error: wrong format of file: " + clientsFile.getName());
+		printErr("Error: wrong format of file: " + clientsFile.getName());
 	}
 
 	public static void showUsage() {
@@ -111,14 +119,14 @@ public class IOUtils {
 	}
 
 	private static void fileIsDirectory(File file) {
-		System.err.println("Error: file " + file.getName() + " is directory");
+		printErr("Error: file " + file.getName() + " is directory");
 	}
 
 	private static void fileNotFound(File file) {
-		System.err.println("Error: file " + file.getName() + " doesn't exist");
+		printErr("Error: file " + file.getName() + " doesn't exist");
 	}
 
-	public static List<Order> readOrders(List<Client> clients, File ordersFile) {
+	public static List<Order> readOrders(File ordersFile) {
 		List<Order> result = new LinkedList<>();
 		try {
 			Scanner sc = new Scanner(ordersFile);
@@ -138,11 +146,11 @@ public class IOUtils {
 			fileNotFound(ordersFile);
 			assert false : "checkFiles failed";
 			e.printStackTrace();
-			System.exit(1);
+			throw new IllegalStateException();
 		} catch (InputMismatchException e) {
 			wrongFileFormat(ordersFile);
 			e.printStackTrace();
-			System.exit(1);
+			throw new IllegalStateException();
 		}
 		return result;
 
@@ -160,7 +168,7 @@ public class IOUtils {
 			}
 			printWriter.close();
 		} catch (FileNotFoundException e) {
-			System.err.println("Error: could not open file: " + resultFileName);
+			printErr("Error: could not open file: " + resultFileName);
 			e.printStackTrace();
 		}
 		for (PrintWriter writer : debugLogs.values()) {
