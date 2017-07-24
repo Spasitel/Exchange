@@ -14,11 +14,6 @@ import ru.sbertech.data.Client;
 import ru.sbertech.data.Order;
 import ru.sbertech.data.OrdersStorage;
 
-/**
- * 
- * @author никита
- *
- */
 public class IOUtils {
 
 	// TODO: check English
@@ -28,7 +23,7 @@ public class IOUtils {
 	public static boolean consoleEnable = false;
 
 	public static void init() {
-		if ("true".equalsIgnoreCase(System.getProperty("debug")))
+		if ("true".equalsIgnoreCase(System.getProperty("Exchange.debug")))
 			debug = true;
 		consoleEnable = true;
 	}

@@ -8,8 +8,9 @@ import ru.sbertech.data.Order;
 import ru.sbertech.data.OrdersStorage;
 
 /**
+ * Simple stock exchange modeling.
  * 
- * @author никита
+ * @author Nikita Minin
  *
  */
 public class ExchangeMain {
@@ -75,6 +76,9 @@ public class ExchangeMain {
 		return match;
 	}
 
+	/**
+	 * Calculate clients state, after executing opposite orders.
+	 */
 	public static void calculateClients(List<Client> clients, Order match, Order order) {
 		Client buyer = null;
 		Client seller = null;
