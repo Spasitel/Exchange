@@ -1,4 +1,4 @@
-package main;
+package ru.sbertech.main;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -6,9 +6,10 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import data.Client;
-import data.Order;
-import data.OrdersStorage;
+import ru.sbertech.data.Client;
+import ru.sbertech.data.Order;
+import ru.sbertech.data.OrdersStorage;
+import ru.sbertech.main.ExchangeMain;
 
 public class ExchangeMainTest {
 	// TODO: use generic instead of making all methods public

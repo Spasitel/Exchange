@@ -1,4 +1,4 @@
-package main;
+package ru.sbertech.main;
 
 import java.io.File;
 import java.util.List;
@@ -6,8 +6,8 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import data.Client;
-import data.Order;
+import ru.sbertech.data.Client;
+import ru.sbertech.data.Order;
 
 public class IOUtilsTest {
 
@@ -15,7 +15,7 @@ public class IOUtilsTest {
 	public void readClientsTest() {
 		// C1 100 130 240 760 320
 		// C2 430 370 120 950 560
-		String file = getClass().getClassLoader().getResource("main/IOUtilsRes/clients.txt").getFile();
+		String file = getClass().getClassLoader().getResource("ru/sbertech/main/IOUtilsRes/clients.txt").getFile();
 		File clientsFile = new File(file);
 		List<Client> clients = IOUtils.readClients(clientsFile);
 		Assert.assertEquals(clients.size(), 2);
@@ -40,7 +40,8 @@ public class IOUtilsTest {
 	public void readOrdersTest() {
 		// C8 b C 15 4
 		// C2 s C 14 5
-		File ordersFile = new File(getClass().getClassLoader().getResource("main/IOUtilsRes/orders.txt").getFile());
+		File ordersFile = new File(
+				getClass().getClassLoader().getResource("ru/sbertech/main/IOUtilsRes/orders.txt").getFile());
 		List<Order> orders = IOUtils.readOrders(ordersFile);
 		Assert.assertEquals(orders.size(), 2);
 		Order firts = orders.get(0);

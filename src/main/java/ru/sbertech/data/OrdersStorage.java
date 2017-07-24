@@ -1,4 +1,4 @@
-package data;
+package ru.sbertech.data;
 
 import java.util.LinkedList;
 import java.util.List;

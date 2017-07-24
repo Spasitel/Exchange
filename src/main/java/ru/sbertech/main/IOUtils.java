@@ -1,4 +1,4 @@
-package main;
+package ru.sbertech.main;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import data.Client;
-import data.Order;
-import data.OrdersStorage;
+import ru.sbertech.data.Client;
+import ru.sbertech.data.Order;
+import ru.sbertech.data.OrdersStorage;
 
 /**
  * 
@@ -28,7 +28,7 @@ public class IOUtils {
 	public static boolean consoleEnable = false;
 
 	public static void init() {
-		if (System.getProperty("debug").equalsIgnoreCase("true"))
+		if ("true".equalsIgnoreCase(System.getProperty("debug")))
 			debug = true;
 		consoleEnable = true;
 	}

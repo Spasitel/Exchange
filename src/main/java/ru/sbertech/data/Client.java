@@ -1,4 +1,4 @@
-package data;
+package ru.sbertech.data;
 
 public class Client {
 	private final String name;

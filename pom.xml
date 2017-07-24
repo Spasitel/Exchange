@@ -4,5 +4,43 @@
   <artifactId>exchange</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>Exchange</name>
-  <description>Test project for job application</description>
+  <properties>
+	<jdk.version>1.7</jdk.version>
+	<junit.version>4.11</junit.version>
+  </properties>
+  <dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>Exchange</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.6.1</version>
+				<configuration>
+					<source>${jdk.version}</source>
+					<target>${jdk.version}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.0.2</version>
+				<configuration>
+				  <archive>
+					<manifest>
+						<mainClass>ru.sbertech.main.ExchangeMain</mainClass>
+					</manifest>
+				  </archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+  <packaging>jar</packaging>
 </project>
